@@ -54,6 +54,21 @@ public final class Stellar {
         getDestinationBytes();
 
     /**
+     * <code>int32 memo_type = 6;</code>
+     */
+    int getMemoType();
+
+    /**
+     * <code>string memo_data = 7;</code>
+     */
+    java.lang.String getMemoData();
+    /**
+     * <code>string memo_data = 7;</code>
+     */
+    com.google.protobuf.ByteString
+        getMemoDataBytes();
+
+    /**
      * <pre>
      * Private key.
      * </pre>
@@ -81,6 +96,7 @@ public final class Stellar {
     private SigningInput() {
       account_ = "";
       destination_ = "";
+      memoData_ = "";
       privateKey_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -133,6 +149,17 @@ public final class Stellar {
               java.lang.String s = input.readStringRequireUtf8();
 
               destination_ = s;
+              break;
+            }
+            case 48: {
+
+              memoType_ = input.readInt32();
+              break;
+            }
+            case 58: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              memoData_ = s;
               break;
             }
             case 66: {
@@ -267,6 +294,49 @@ public final class Stellar {
       }
     }
 
+    public static final int MEMO_TYPE_FIELD_NUMBER = 6;
+    private int memoType_;
+    /**
+     * <code>int32 memo_type = 6;</code>
+     */
+    public int getMemoType() {
+      return memoType_;
+    }
+
+    public static final int MEMO_DATA_FIELD_NUMBER = 7;
+    private volatile java.lang.Object memoData_;
+    /**
+     * <code>string memo_data = 7;</code>
+     */
+    public java.lang.String getMemoData() {
+      java.lang.Object ref = memoData_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        memoData_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string memo_data = 7;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMemoDataBytes() {
+      java.lang.Object ref = memoData_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        memoData_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     public static final int PRIVATE_KEY_FIELD_NUMBER = 8;
     private com.google.protobuf.ByteString privateKey_;
     /**
@@ -309,6 +379,12 @@ public final class Stellar {
       if (!getDestinationBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, destination_);
       }
+      if (memoType_ != 0) {
+        output.writeInt32(6, memoType_);
+      }
+      if (!getMemoDataBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, memoData_);
+      }
       if (!privateKey_.isEmpty()) {
         output.writeBytes(8, privateKey_);
       }
@@ -339,6 +415,13 @@ public final class Stellar {
       if (!getDestinationBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, destination_);
       }
+      if (memoType_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, memoType_);
+      }
+      if (!getMemoDataBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, memoData_);
+      }
       if (!privateKey_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(8, privateKey_);
@@ -368,6 +451,10 @@ public final class Stellar {
           .equals(other.getAccount())) return false;
       if (!getDestination()
           .equals(other.getDestination())) return false;
+      if (getMemoType()
+          != other.getMemoType()) return false;
+      if (!getMemoData()
+          .equals(other.getMemoData())) return false;
       if (!getPrivateKey()
           .equals(other.getPrivateKey())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -392,6 +479,10 @@ public final class Stellar {
       hash = (53 * hash) + getAccount().hashCode();
       hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
       hash = (53 * hash) + getDestination().hashCode();
+      hash = (37 * hash) + MEMO_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + getMemoType();
+      hash = (37 * hash) + MEMO_DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getMemoData().hashCode();
       hash = (37 * hash) + PRIVATE_KEY_FIELD_NUMBER;
       hash = (53 * hash) + getPrivateKey().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -541,6 +632,10 @@ public final class Stellar {
 
         destination_ = "";
 
+        memoType_ = 0;
+
+        memoData_ = "";
+
         privateKey_ = com.google.protobuf.ByteString.EMPTY;
 
         return this;
@@ -574,6 +669,8 @@ public final class Stellar {
         result.sequence_ = sequence_;
         result.account_ = account_;
         result.destination_ = destination_;
+        result.memoType_ = memoType_;
+        result.memoData_ = memoData_;
         result.privateKey_ = privateKey_;
         onBuilt();
         return result;
@@ -638,6 +735,13 @@ public final class Stellar {
         }
         if (!other.getDestination().isEmpty()) {
           destination_ = other.destination_;
+          onChanged();
+        }
+        if (other.getMemoType() != 0) {
+          setMemoType(other.getMemoType());
+        }
+        if (!other.getMemoData().isEmpty()) {
+          memoData_ = other.memoData_;
           onChanged();
         }
         if (other.getPrivateKey() != com.google.protobuf.ByteString.EMPTY) {
@@ -884,6 +988,101 @@ public final class Stellar {
   checkByteStringIsUtf8(value);
         
         destination_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int memoType_ ;
+      /**
+       * <code>int32 memo_type = 6;</code>
+       */
+      public int getMemoType() {
+        return memoType_;
+      }
+      /**
+       * <code>int32 memo_type = 6;</code>
+       */
+      public Builder setMemoType(int value) {
+        
+        memoType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 memo_type = 6;</code>
+       */
+      public Builder clearMemoType() {
+        
+        memoType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object memoData_ = "";
+      /**
+       * <code>string memo_data = 7;</code>
+       */
+      public java.lang.String getMemoData() {
+        java.lang.Object ref = memoData_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          memoData_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string memo_data = 7;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMemoDataBytes() {
+        java.lang.Object ref = memoData_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          memoData_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string memo_data = 7;</code>
+       */
+      public Builder setMemoData(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        memoData_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string memo_data = 7;</code>
+       */
+      public Builder clearMemoData() {
+        
+        memoData_ = getDefaultInstance().getMemoData();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string memo_data = 7;</code>
+       */
+      public Builder setMemoDataBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        memoData_ = value;
         onChanged();
         return this;
       }
@@ -1593,12 +1792,13 @@ public final class Stellar {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rStellar.proto\022\020TW.Stellar.Proto\"x\n\014Sig" +
-      "ningInput\022\016\n\006amount\030\001 \001(\003\022\013\n\003fee\030\002 \001(\005\022\020" +
-      "\n\010sequence\030\003 \001(\005\022\017\n\007account\030\004 \001(\t\022\023\n\013des" +
-      "tination\030\005 \001(\t\022\023\n\013private_key\030\010 \001(\014\"\"\n\rS" +
-      "igningOutput\022\021\n\tsignature\030\001 \001(\tB\027\n\025walle" +
-      "t.core.jni.protob\006proto3"
+      "\n\rStellar.proto\022\020TW.Stellar.Proto\"\236\001\n\014Si" +
+      "gningInput\022\016\n\006amount\030\001 \001(\003\022\013\n\003fee\030\002 \001(\005\022" +
+      "\020\n\010sequence\030\003 \001(\005\022\017\n\007account\030\004 \001(\t\022\023\n\013de" +
+      "stination\030\005 \001(\t\022\021\n\tmemo_type\030\006 \001(\005\022\021\n\tme" +
+      "mo_data\030\007 \001(\t\022\023\n\013private_key\030\010 \001(\014\"\"\n\rSi" +
+      "gningOutput\022\021\n\tsignature\030\001 \001(\tB\027\n\025wallet" +
+      ".core.jni.protob\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1617,7 +1817,7 @@ public final class Stellar {
     internal_static_TW_Stellar_Proto_SigningInput_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_TW_Stellar_Proto_SigningInput_descriptor,
-        new java.lang.String[] { "Amount", "Fee", "Sequence", "Account", "Destination", "PrivateKey", });
+        new java.lang.String[] { "Amount", "Fee", "Sequence", "Account", "Destination", "MemoType", "MemoData", "PrivateKey", });
     internal_static_TW_Stellar_Proto_SigningOutput_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_TW_Stellar_Proto_SigningOutput_fieldAccessorTable = new
