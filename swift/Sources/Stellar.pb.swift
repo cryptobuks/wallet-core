@@ -81,7 +81,7 @@ public struct TW_Stellar_Proto_SigningInput {
     set {_uniqueStorage()._fee = newValue}
   }
 
-  public var sequence: Int32 {
+  public var sequence: Int64 {
     get {return _storage._sequence}
     set {_uniqueStorage()._sequence = newValue}
   }
@@ -318,7 +318,7 @@ extension TW_Stellar_Proto_SigningInput: SwiftProtobuf.Message, SwiftProtobuf._M
   fileprivate class _StorageClass {
     var _amount: Int64 = 0
     var _fee: Int32 = 0
-    var _sequence: Int32 = 0
+    var _sequence: Int64 = 0
     var _account: String = String()
     var _destination: String = String()
     var _privateKey: Data = SwiftProtobuf.Internal.emptyData
@@ -353,7 +353,7 @@ extension TW_Stellar_Proto_SigningInput: SwiftProtobuf.Message, SwiftProtobuf._M
         switch fieldNumber {
         case 1: try decoder.decodeSingularInt64Field(value: &_storage._amount)
         case 2: try decoder.decodeSingularInt32Field(value: &_storage._fee)
-        case 3: try decoder.decodeSingularInt32Field(value: &_storage._sequence)
+        case 3: try decoder.decodeSingularInt64Field(value: &_storage._sequence)
         case 4: try decoder.decodeSingularStringField(value: &_storage._account)
         case 5: try decoder.decodeSingularStringField(value: &_storage._destination)
         case 6: try decoder.decodeSingularBytesField(value: &_storage._privateKey)
@@ -412,7 +412,7 @@ extension TW_Stellar_Proto_SigningInput: SwiftProtobuf.Message, SwiftProtobuf._M
         try visitor.visitSingularInt32Field(value: _storage._fee, fieldNumber: 2)
       }
       if _storage._sequence != 0 {
-        try visitor.visitSingularInt32Field(value: _storage._sequence, fieldNumber: 3)
+        try visitor.visitSingularInt64Field(value: _storage._sequence, fieldNumber: 3)
       }
       if !_storage._account.isEmpty {
         try visitor.visitSingularStringField(value: _storage._account, fieldNumber: 4)
