@@ -9,7 +9,8 @@
 using namespace TW;
 using namespace TW::Ethereum;
 
-std::tuple<uint256_t, uint256_t, uint256_t> Signer::values(const uint256_t& chainID, const Data& signature) noexcept {
+std::tuple<uint256_t, uint256_t, uint256_t> Signer::values(const uint256_t& chainID,
+                                                           const Data& signature) noexcept {
     boost::multiprecision::uint256_t r, s, v;
     import_bits(r, signature.begin(), signature.begin() + 32);
     import_bits(s, signature.begin() + 32, signature.begin() + 64);
@@ -26,9 +27,41 @@ std::tuple<uint256_t, uint256_t, uint256_t> Signer::values(const uint256_t& chai
     return std::make_tuple(r, s, newV);
 }
 
-std::tuple<uint256_t, uint256_t, uint256_t> Signer::sign(const uint256_t& chainID, const PrivateKey& privateKey, const Data& hash) noexcept {
+std::tuple<uint256_t, uint256_t, uint256_t>
+Signer::sign(const uint256_t& chainID, const PrivateKey& privateKey, const Data& hash) noexcept {
     auto signature = privateKey.sign(hash, TWCurveSECP256k1);
     return values(chainID, signature);
+}
+
+Proto::SigningOutput Signer::sign(const TW::Ethereum::Proto::SigningInput &input) const noexcept {
+    auto key = PrivateKey(Data(input.private_key().begin(), input.private_key().end()));
+
+    auto transaction = Transaction(
+            /* nonce: */ load(input.nonce()),
+            /* gasPrice: */ load(input.gas_price()),
+            /* gasLimit: */ load(input.gas_limit()),
+            /* to: */ Address(input.to_address()),
+            /* amount: */ load(input.amount()),
+            /* payload: */ Data(input.payload().begin(), input.payload().end())
+    );
+
+    sign(key, transaction);
+
+    auto protoOutput = Proto::SigningOutput();
+
+    auto encoded = RLP::encode(transaction);
+    protoOutput.set_encoded(encoded.data(), encoded.size());
+
+    auto v = store(transaction.v);
+    protoOutput.set_v(v.data(), v.size());
+
+    auto r = store(transaction.r);
+    protoOutput.set_r(r.data(), r.size());
+
+    auto s = store(transaction.s);
+    protoOutput.set_s(s.data(), s.size());
+
+    return protoOutput;
 }
 
 void Signer::sign(const PrivateKey& privateKey, Transaction& transaction) const noexcept {

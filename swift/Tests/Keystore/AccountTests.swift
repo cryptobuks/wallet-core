@@ -13,7 +13,7 @@ class AccountTests: XCTestCase {
 
     func testSignHash() throws {
         let privateKeyData = Data(hexString: "D30519BCAE8D180DBFCC94FE0B8383DC310185B0BE97B4365083EBCECCD75759")!
-        let key = StoredKey.importPrivateKey(privateKey: privateKeyData, password: password, coin: .ethereum)
+        let key = StoredKey.importPrivateKey(privateKey: privateKeyData, name: "name", password: password, coin: .ethereum)!
         let wallet = Wallet(keyURL: URL(fileURLWithPath: "/"), key: key)
 
         let hash = Data(hexString: "3F891FDA3704F0368DAB65FA81EBE616F4AA2A0854995DA4DC0B59D2CADBD64F")!
@@ -26,7 +26,7 @@ class AccountTests: XCTestCase {
     }
 
     func testSignHashHD() throws {
-        let key = StoredKey.importHDWallet(mnemonic: words, password: password, coin: .ethereum)
+        let key = StoredKey.importHDWallet(mnemonic: words, name: "name", password: password, coin: .ethereum)!
         let wallet = Wallet(keyURL: URL(fileURLWithPath: "/"), key: key)
 
         let hash = Data(hexString: "3F891FDA3704F0368DAB65FA81EBE616F4AA2A0854995DA4DC0B59D2CADBD64F")!
@@ -40,7 +40,7 @@ class AccountTests: XCTestCase {
     }
 
     func testExtendedPubkey() throws {
-        let key = StoredKey.importHDWallet(mnemonic: words, password: password, coin: .bitcoin)
+        let key = StoredKey.importHDWallet(mnemonic: words, name: "name", password: password, coin: .bitcoin)!
         let wallet = Wallet(keyURL: URL(fileURLWithPath: "/"), key: key)
         _ = try wallet.getAccount(password: password, coin: .bitcoin)
         _ = try wallet.getAccount(password: password, coin: .bitcoinCash)
@@ -50,22 +50,22 @@ class AccountTests: XCTestCase {
     }
 
     func testBTCPrivateKeyWithPaths() throws {
-        let key = StoredKey.importHDWallet(mnemonic: words, password: password, coin: .bitcoin)
+        let key = StoredKey.importHDWallet(mnemonic: words, name: "name", password: password, coin: .bitcoin)!
         let wallet = Wallet(keyURL: URL(fileURLWithPath: "/"), key: key)
 
         let hdwallet = wallet.key.wallet(password: password)!
         let privateKey = hdwallet.getKeyForCoin(coin: .bitcoin)
 
-        XCTAssertEqual(privateKey.wif(), "5KC2mUrQBRJZf4xuoDgNWCYz9cj5ZHxZeHho8ieJex8KnVgng6r")
+        XCTAssertEqual(privateKey.data.hexString, "b511e175dc474c810ad567557a13a29f9e82576990d5f36dab342dd2d00fb5c4")
     }
 
     func testBCHPrivateKeyWithPaths() throws {
-        let key = StoredKey.importHDWallet(mnemonic: words, password: password, coin: .bitcoinCash)
+        let key = StoredKey.importHDWallet(mnemonic: words, name: "name", password: password, coin: .bitcoinCash)!
         let wallet = Wallet(keyURL: URL(fileURLWithPath: "/"), key: key)
 
         let hdwallet = wallet.key.wallet(password: password)!
-        let privateKey = hdwallet.getKeyForCoin(coin: .bitcoin)
+        let privateKey = hdwallet.getKeyForCoin(coin: .bitcoinCash)
 
-        XCTAssertEqual(privateKey.wif(), "5KC2mUrQBRJZf4xuoDgNWCYz9cj5ZHxZeHho8ieJex8KnVgng6r")
+        XCTAssertEqual(privateKey.data.hexString, "04b02272b75eaee0b7f1a96d667cb4629b400e2152a841c6791f802b336a8af8")
     }
 }
