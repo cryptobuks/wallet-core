@@ -77,7 +77,7 @@ TEST(BitcoinSigning, SignP2WPKH) {
 
     // Setup input
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(335'790'000);
     input.set_byte_fee(1);
     input.set_to_address("1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx");
@@ -116,7 +116,7 @@ TEST(BitcoinSigning, SignP2WPKH) {
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
     // Sign
-    auto result = TW::Bitcoin::TransactionSigner<Transaction>(std::move(input)).sign();
+    auto result = TransactionSigner<Transaction, TransactionBuilder>(std::move(input)).sign();
 
     ASSERT_TRUE(result) << result.error();;
     auto signedTx = result.payload();
@@ -161,7 +161,7 @@ TEST(BitcoinSigning, EncodeP2WSH) {
 TEST(BitcoinSigning, SignP2WSH) {
     // Setup input
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(1000);
     input.set_byte_fee(1);
     input.set_to_address("1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx");
@@ -188,7 +188,7 @@ TEST(BitcoinSigning, SignP2WSH) {
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
     // Sign
-    auto result = TW::Bitcoin::TransactionSigner<Transaction>(std::move(input)).sign();
+    auto result = TransactionSigner<Transaction, TransactionBuilder>(std::move(input)).sign();
 
     ASSERT_TRUE(result) << result.error();;
     auto signedTx = result.payload();
@@ -238,7 +238,7 @@ TEST(BitcoinSigning, EncodeP2SH_P2WPKH) {
 TEST(BitcoinSigning, SignP2SH_P2WPKH) {
     // Setup input
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(200'000'000);
     input.set_byte_fee(1);
     input.set_to_address("1Bp9U1ogV3A14FMvKbRJms7ctyso4Z4Tcx");
@@ -266,7 +266,7 @@ TEST(BitcoinSigning, SignP2SH_P2WPKH) {
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
     // Sign
-    auto result = TW::Bitcoin::TransactionSigner<Transaction>(std::move(input)).sign();
+    auto result = TransactionSigner<Transaction, TransactionBuilder>(std::move(input)).sign();
 
     ASSERT_TRUE(result) << result.error();
     auto signedTx = result.payload();
@@ -361,7 +361,7 @@ TEST(BitcoinSigning, SignP2SH_P2WSH) {
     utxo->set_amount(987654321);
 
     // Sign
-    auto signer = TransactionSigner<Transaction>(std::move(input));
+    auto signer = TransactionSigner<Transaction, TransactionBuilder>(std::move(input));
     signer.transaction = unsignedTx;
     signer.plan.utxos = {*utxo};
     auto result = signer.sign();

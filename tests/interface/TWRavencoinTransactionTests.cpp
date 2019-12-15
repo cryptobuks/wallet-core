@@ -19,7 +19,7 @@
 #include <gtest/gtest.h>
 
 using namespace TW;
-using namespace Bitcoin;
+using namespace TW::Bitcoin;
 
 TEST(RavencoinTransaction, SignTransaction) {
     /*
@@ -37,7 +37,7 @@ TEST(RavencoinTransaction, SignTransaction) {
     const int64_t fee = 2000000;
 
     auto input = Bitcoin::Proto::SigningInput();
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(amount);
     input.set_byte_fee(1);
     input.set_to_address("RNoSGCX8SPFscj8epDaJjqEpuZa2B5in88");
@@ -56,13 +56,13 @@ TEST(RavencoinTransaction, SignTransaction) {
     auto utxoKey0 = DATA("75e4c520c92b3836e77dfe2715da469b71f7df86fc11ef328870735a700551fa");
     input.add_private_key(TWDataBytes(utxoKey0.get()), TWDataSize(utxoKey0.get()));
 
-    auto plan = Bitcoin::TransactionBuilder::plan(input);
+    auto plan = TransactionBuilder::plan(input);
     plan.amount = amount;
     plan.fee = fee;
     plan.change = utxo_amount - amount - fee;
 
     // Sign
-    auto signer = TW::Bitcoin::TransactionSigner<TW::Bitcoin::Transaction>(std::move(input), plan);
+    auto signer = TransactionSigner<Transaction, TransactionBuilder>(std::move(input), plan);
     auto result = signer.sign();
     auto signedTx = result.payload();
 

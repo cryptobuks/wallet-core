@@ -29,7 +29,7 @@ using namespace TW::Bitcoin;
 
 TEST(GroestlcoinSigning, SignP2WPKH) {
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(2500);
     input.set_byte_fee(1);
     input.set_to_address("31inaRqambLsd9D7Ke4USZmGEVd3PHkh7P");
@@ -47,7 +47,7 @@ TEST(GroestlcoinSigning, SignP2WPKH) {
     utxo0->mutable_out_point()->set_index(1);
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
-    auto result = TW::Bitcoin::TransactionSigner<Groestlcoin::Transaction>(std::move(input)).sign();
+    auto result = TransactionSigner<Groestlcoin::Transaction, TransactionBuilder>(std::move(input)).sign();
     ASSERT_TRUE(result) << result.error();
     auto signedTx = result.payload();
 
@@ -59,7 +59,7 @@ TEST(GroestlcoinSigning, SignP2WPKH) {
 
 TEST(GroestlcoinSigning, SignP2PKH) {
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(2500);
     input.set_byte_fee(1);
     input.set_to_address("grs1qw4teyraux2s77nhjdwh9ar8rl9dt7zww8r6lne");
@@ -77,7 +77,7 @@ TEST(GroestlcoinSigning, SignP2PKH) {
     utxo0->mutable_out_point()->set_index(0);
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
-    auto result = TW::Bitcoin::TransactionSigner<Groestlcoin::Transaction>(std::move(input)).sign();
+    auto result = TransactionSigner<Groestlcoin::Transaction, TransactionBuilder>(std::move(input)).sign();
     ASSERT_TRUE(result) << result.error();
     auto signedTx = result.payload();
 
@@ -90,7 +90,7 @@ TEST(GroestlcoinSigning, SignP2PKH) {
 TEST(GroestlcoinSigning, SignP2SH_P2WPKH) {
     // TX outputs
     Proto::SigningInput input;
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(5'000);
     input.set_byte_fee(1);
     input.set_to_address("Fj62rBJi8LvbmWu2jzkaUX1NFXLEqDLoZM");
@@ -118,7 +118,7 @@ TEST(GroestlcoinSigning, SignP2SH_P2WPKH) {
     utxo0->mutable_out_point()->set_index(0);
     utxo0->mutable_out_point()->set_sequence(UINT32_MAX);
 
-    auto result = TW::Bitcoin::TransactionSigner<Groestlcoin::Transaction>(std::move(input)).sign();
+    auto result = Bitcoin::TransactionSigner<Groestlcoin::Transaction, TransactionBuilder>(std::move(input)).sign();
     ASSERT_TRUE(result) << result.error();
     auto signedTx = result.payload();
 

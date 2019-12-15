@@ -8,7 +8,6 @@
 
 #include "TWBase.h"
 #include "TWData.h"
-#include "TWHRP.h"
 #include "TWString.h"
 
 TW_EXTERN_C_BEGIN
@@ -28,10 +27,6 @@ bool TWNULSAddressIsValidString(TWString *_Nonnull string);
 /// Creates an address from a string representaion.
 TW_EXPORT_STATIC_METHOD
 struct TWNULSAddress *_Nullable TWNULSAddressCreateWithString(TWString *_Nonnull string);
-
-/// Creates an address from a raw data representaion.
-TW_EXPORT_STATIC_METHOD
-struct TWNULSAddress *_Nullable TWNULSAddressCreateWithData(TWData *_Nonnull data);
 
 /// Creates an address from a public key.
 TW_EXPORT_STATIC_METHOD

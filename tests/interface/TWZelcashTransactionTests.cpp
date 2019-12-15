@@ -8,7 +8,7 @@
 #include "TWTestUtilities.h"
 
 #include "Bitcoin/OutPoint.h"
-#include "Bitcoin/TransactionBuilder.h"
+#include "Zcash/TransactionBuilder.h"
 #include "Bitcoin/TransactionSigner.h"
 #include "HexCoding.h"
 #include "PublicKey.h"
@@ -20,7 +20,6 @@
 #include <gtest/gtest.h>
 
 using namespace TW;
-using namespace Zcash;
 
 TEST(ZelcashTransaction, Encode) {
 	// We are using Zcash test because it is also the encode used by zelcash
@@ -28,6 +27,7 @@ TEST(ZelcashTransaction, Encode) {
     auto transaction = Zcash::Transaction();
     transaction.lockTime = 0x0004b029;
     transaction.expiryHeight = 0x0004b048;
+    transaction.branchId = Zcash::SaplingBranchID;
 
     auto outpoint0 = Bitcoin::OutPoint(parse_hex("a8c685478265f4c14dada651969c45a65e1aeb8cd6791f2f5bb6a1d9952104d9"), 1);
     transaction.inputs.emplace_back(outpoint0, Bitcoin::Script(parse_hex("483045022100a61e5d557568c2ddc1d9b03a7173c6ce7c996c4daecab007ac8f34bee01e6b9702204d38fdc0bcf2728a69fde78462a10fb45a9baa27873e6a5fc45fb5c76764202a01210365ffea3efa3908918a8b8627724af852fc9b86d7375b103ab0543cf418bcaa7f")), 0xfffffffe);
@@ -38,7 +38,7 @@ TEST(ZelcashTransaction, Encode) {
     auto script1 = Bitcoin::Script(parse_hex("76a9145453e4698f02a38abdaa521cd1ff2dee6fac187188ac"));
     transaction.outputs.emplace_back(0x0098958b, script1);
 
-    auto unsignedData = std::vector<uint8_t>();
+    auto unsignedData = Data{};
     transaction.encode(unsignedData);
 
     ASSERT_EQ(hex(unsignedData.begin(), unsignedData.end()),
@@ -56,7 +56,7 @@ TEST(ZelcashTransaction, Encode) {
     );
 
     auto scriptCode = Bitcoin::Script(parse_hex("76a914507173527b4c3318a2aecd793bf1cfed705950cf88ac"));
-    auto preImage = transaction.getPreImage(scriptCode, 0, 1, 0x02faf080);
+    auto preImage = transaction.getPreImage(scriptCode, 0, TWBitcoinSigHashTypeAll, 0x02faf080);
     ASSERT_EQ(hex(preImage.begin(), preImage.end()),
         /* header */              "04000080"
         /* versionGroupId */      "85202f89"
@@ -76,7 +76,7 @@ TEST(ZelcashTransaction, Encode) {
         /* sequence */            "feffffff"
     );
 
-    auto sighash = transaction.getSignatureHash(scriptCode, 0, 1, 0x02faf080, BASE);
+    auto sighash = transaction.getSignatureHash(scriptCode, 0, TWBitcoinSigHashTypeAll, 0x02faf080, BASE);
     ASSERT_EQ(hex(sighash.begin(), sighash.end()), "f3148f80dfab5e573d5edfe7a850f5fd39234f80b5429d3a57edcc11e34c585b");
 }
 
@@ -87,7 +87,7 @@ TEST(ZelcashTransaction, Signing) {
     const int64_t fee = 2260;
 
     auto input = Bitcoin::Proto::SigningInput();
-    input.set_hash_type(TWSignatureHashTypeAll);
+    input.set_hash_type(TWBitcoinSigHashTypeAll);
     input.set_amount(amount);
     input.set_byte_fee(1);
     input.set_to_address("t1UPSwfMYLe18ezbCqnR5QgdJGznzCUYHkj");
@@ -108,9 +108,10 @@ TEST(ZelcashTransaction, Signing) {
     plan.amount = amount;
     plan.fee = fee;
     plan.change = 0;
+    plan.branchId = Data(Zcash::SaplingBranchID.begin(), Zcash::SaplingBranchID.end());
 
     // Sign
-    auto result = TW::Bitcoin::TransactionSigner<Transaction>(std::move(input), plan).sign();
+    auto result = Bitcoin::TransactionSigner<Zcash::Transaction, Zcash::TransactionBuilder>(std::move(input), plan).sign();
     ASSERT_TRUE(result) << result.error();
     auto signedTx = result.payload();
 
